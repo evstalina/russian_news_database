@@ -1,0 +1,82 @@
+# в этот config файл я вывел пути к основным файлам использующимся (не всем), чтобы можно было что-то быстро поменять,
+# либо просто понять структуру использующихся файлов.
+
+# пути к файлам и подключения к БД
+MODELS:
+  CLASS_MODEL: # модель выделения экономических новостей из федеральных
+    STOP_WORDS: 'models/class_model/stop_words.pkl'
+    TFIDF: 'models/class_model/tfidf.pkl'
+    XGBOOST6CLASS: 'models/class_model/xgboost_6classes.pkl'
+    TRASH_PHRASES: 'models/class_model/trash_phrases.pkl'
+    MARKS: 'models/class_model/markups keys/marks.xlsx'
+  VECTORIZER: 'models/navec/navec_hudlit_v1_12B_500K_300d_100q.tar' # эмбеддинг
+  INFLATION: # определение дез- про- инф/нейтральной новости (классификатор)
+    CNN: 'models/CNN'
+    TOKENIZER: 'models/CNN/tokenizer.json'
+    CATEGORIES: 'models/categories.xlsx'
+    INF_FILTER: 'data/filters/filters.txt'
+    EXCLUSION_FILTER: 'data/filters/filters_model.txt'
+    STOP_WORDS: 'data/filters/stopwords.txt'
+    PROD_FILTER: 'data/filters/prod.txt'
+    NPROD_FILTER: 'data/filters/nprod.txt'
+    SERVICES_FILTER: 'data/filters/services.txt'
+    TRASH_PHRASES: 'data/filters/trash.pkl'
+    TRASH_PHRASES_LEM: 'data/filters/trash_lem.pkl'
+    PHRASE_CUT: '(\s.{1,50}\s(цена|стоимость|инфляция|тариф|платеж|плата|подешеветь|подорожать|дешеветь|дорожать|дороже
+    |дешевле|удешевление|удорожание)\s.{1,50}\s)' # как выделяются кусочки новостей для дальнейшей обработки
+
+DASHBOARD:
+  DASHBOARD_BASE: 'postgresql://postgres:qwerty@localhost:5433/postgres' # 13 сервер
+  DICT_REGION: # переименование
+    VVGU: 'data/gu_proc_files/VVGU/others/dict_region.xlsx'
+    SZGU: 'data/gu_proc_files/SZGU/others/dict_region.xlsx'
+  REGION_SHARES:
+    VVGU: 'data/gu_proc_files/VVGU/others/region_shares.xlsx'
+    SZGU: 'data/gu_proc_files/SZGU/others/region_shares.xlsx'
+  IN_ROW: 5 # сколько может быть в новости различных ТиУ. Что больше, то обрезается. Это для того, чтобы исключать
+  # всякие новости по типу Росстата с перечислением всего на свете
+
+INFLATION_BASE:
+  POSTGRES:
+      FED: 'postgresql://postgres:qwerty@localhost:5432/postgres' # 9.6 сервер
+  SQLITE:
+      VVGU: 'sqlite:///data/dbs/base_VVGU.db'
+      SZGU: 'sqlite:///data/dbs/base_SZGU.db'
+
+FEED_PARAMS:
+  FED_23: 'data/feed_params/feeds_params_FED_23.xlsx'
+  FED: 'data/feed_params/feeds_params_FED_28.xlsx'
+  VVGU: 'data/feed_params/feeds_params_VVGU.xlsx'
+  SZGU: 'data/feed_params/feeds_params_SZGU.xlsx'
+
+# некоторые из используемых параметров
+
+USER_AGENT: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)
+Chrome/87.0.4280.88 Safari/537.36 '
+
+FEEDLY:
+  TOKENS: # менять необходимо каждые 2 недели
+    1: 'A3Q6Sr8eGStmDgxnoZV6TUWsgMBY0dceLT-4j5JPFO0Cl5vKErm5B4weMbOS4HtwxyYWUj-Kux6XCcTSjbnDgvx8BAVIQvtLXqQeTfbcArvTsdDZBDOsd9ZrEGJpadEYRSS-uQQtBBrth3Z89-cOLmbhIlVpnq1ZbigVAzRT_wVdUBQ6dqE2ZgsdHdo5jURtgQqoaXXhu_YoH4DoWzQKUHKSwscotKUUlBrG-k0vJy6_ZQXgXDhDHm7doXKPiiw:feedlydev'
+
+    2: 'A1C7wZZnF227Y1Ue2xSRj7eMQ1KHolZf-ERANXG5nmy09XACgvfEm8ofF2bTRpSTkAPGAF2FCa9Bp07L63d9hUIEryUSkvQAjZ3TeROEeeUoDA3MZ0JGcwkh5lL2MspslMmM38ZzWQGmEb6gw0ur4azXbWdL_QIl07PUztq1PO_v1Z3pjwK6QdjKS3PtumN4ldvRf1CnhWAmmeGl41gAF-WTDxwsP4pbraTbzR6Ob7w6DIKsJ4GxkyYBQPmGqzY:feedlydev'
+
+    3: 'A23xRVhuCl6zzLY_hT34_6COvisQKRjr8ksu7e89pk5_lZSLEHiDS23qBbb285AIAnydeJ--9WH9ehgE7Wc43RQqVj_yWTocI1PR4DeL_kJW218dIMBwp2bfn40ec3FY_PK9zgsu0AC5hN0fbXdriz_XnIRRL5XvSN6LBH3asizDtQdakxIr5w-jad08GeMYp5xTjbmn-oyiASr6lbc5kwZK3TWYsn0okm-C6J1qqweADsB5s8w8s1GmnH38uw:feedlydev'
+
+  URL_METHOD: 'urlopen' # через какую библиотеку скачиваются новости
+  URL_METHOD_FED: 'request' # через какую библиотеку скачиваются новости для фед. Вообще для ВВГУ+СЗГУ норм работает
+  # URLOPEN, для фед я юзал REQUEST, т.к. нужно было обходить защиту и т.д. Так что это так можно оставить, если вдруг
+  # что-то не изменится.
+  ACC_CONTROL: False # это для проверки, если качество падает ниже например 90% (много не скачивается, то скачка
+  # прерывается. В последнее время много из-за блокировок и прочих вещей не качается, поэтому я так жестко уже не
+  # ставил. Качество проверяется на каждых 10 батчах, если выдаст меньшее качество при True, то те,
+  # которые он ранее скачал из базы не удаляться, стоит это помнить.
+  BATCH_SIZE: 1000 # размер батча обработки новостей, чтоб сильно оперативку не грузить. Если вдруг не справляется комп,
+  # можно попробовать уменьшить
+
+CUSTOM_PARSERS:
+  VEDOMOSTI: True
+  INTERFAX: True
+  REGNUM: True
+  PRAVDA: True
+  FINANZ: False
+
